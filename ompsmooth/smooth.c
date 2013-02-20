@@ -26,6 +26,10 @@ int main()
   /* Variables for timing */
   struct timeval ta, tb;
 
+  int i;
+  float YXTot, XYTot = 0.0;
+  printf("SerialYX\tSerialXY\n");
+  for ( i = 0; i < 3; i++) {
   /* Create two input matrixes */
   float * m1in;
   float * m2out;
@@ -68,11 +72,14 @@ int main()
   if ( ta.tv_usec <= tb.tv_usec ) {
     u = tb.tv_usec - ta.tv_usec;
   } else {
-    u = 1000000 - tb.tv_usec + ta.tv_usec;
+    u = 1000000 - ta.tv_usec + tb.tv_usec;
     s = s-1;
   }
 
-  printf ("Serial YX smoother took %d seconds and %d microseconds\n",s,u );
+  float time = (float)s + (float)u/1000000.0;
+  YXTot += time;
+  printf("%f\t", time);
+  //printf ("Serial YX smoother took %d seconds and %d microseconds\n",s,u );
 
   /* get initial time */
   gettimeofday ( &ta, NULL );
@@ -88,77 +95,85 @@ int main()
   if ( ta.tv_usec <= tb.tv_usec ) {
     u = tb.tv_usec - ta.tv_usec;
   } else {
-    u = 1000000 - tb.tv_usec + ta.tv_usec;
+    u = 1000000 - ta.tv_usec + tb.tv_usec;
     s = s-1;
   }
 
-  printf ("Serial XY smoother took %d seconds and %d microseconds\n",s,u );
+  time = (float)s + (float)u/1000000.0;
+  XYTot += time;
+  time = (float)s + (float)u/1000000.0;
+  printf("%f\n", time);
+  //printf ("Serial XY smoother took %d seconds and %d microseconds\n",s,u );
+  free(m1in);
+  free(m2out);
+  }
+  printf("---------------------------------AVG\n%f\t%f\n",YXTot/(float)i, XYTot/(float)i);
 
   /*********  Parallel Tests **********/
-  int threads;
-  for (threads=1; threads <=32; threads*=2)
-  {
-
-    omp_set_num_threads(threads); 
-    printf("Threads = %d\n", threads);
-
-    /* get initial time */
-    gettimeofday ( &ta, NULL );
-
-    smoothParallelYXFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
-
-    /* get initial time */
-    gettimeofday ( &tb, NULL );
-
-    /* Work out the time */
-    s = tb.tv_sec - ta.tv_sec;
-    if ( ta.tv_usec < tb.tv_usec ) {
-      u = tb.tv_usec - ta.tv_usec;
-    } else {
-      u = 1000000 - tb.tv_usec + ta.tv_usec;
-      s = s-1;
-    }
-
-    printf ("Parallel YX smoother took %d seconds and %d microseconds\n",s,u );
-
-    /* get initial time */
-    gettimeofday ( &ta, NULL );
-
-    smoothParallelXYFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
-
-    /* get initial time */
-    gettimeofday ( &tb, NULL );
-
-    /* Work out the time */
-    s = tb.tv_sec - ta.tv_sec;
-    if ( ta.tv_usec < tb.tv_usec ) {
-      u = tb.tv_usec - ta.tv_usec;
-    } else {
-      u = 1000000 - tb.tv_usec + ta.tv_usec;
-      s = s-1;
-    }
-
-    printf ("Parallel XY smoother took %d seconds and %d microseconds\n",s,u );
-
-
-    /* get initial time */
-    gettimeofday ( &ta, NULL );
-
-    smoothParallelCoalescedFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
-
-    /* get initial time */
-    gettimeofday ( &tb, NULL );
-
-    /* Work out the time */
-    s = tb.tv_sec - ta.tv_sec;
-    if ( ta.tv_usec < tb.tv_usec ) {
-      u = tb.tv_usec - ta.tv_usec;
-    } else {
-      u = 1000000 - tb.tv_usec + ta.tv_usec;
-      s = s-1;
-    }
-
-    printf ("Parallel coalesced smoother took %d seconds and %d microseconds\n",s,u );
-  }
+//  int threads;
+//  for (threads=1; threads <=32; threads*=2)
+//  {
+//
+//    omp_set_num_threads(threads);
+//    printf("Threads = %d\n", threads);
+//
+//    /* get initial time */
+//    gettimeofday ( &ta, NULL );
+//
+//    smoothParallelYXFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
+//
+//    /* get initial time */
+//    gettimeofday ( &tb, NULL );
+//
+//    /* Work out the time */
+//    s = tb.tv_sec - ta.tv_sec;
+//    if ( ta.tv_usec < tb.tv_usec ) {
+//      u = tb.tv_usec - ta.tv_usec;
+//    } else {
+//      u = 1000000 - ta.tv_usec + tb.tv_usec;
+//      s = s-1;
+//    }
+//
+//    printf ("Parallel YX smoother took %d seconds and %d microseconds\n",s,u );
+//
+//    /* get initial time */
+//    gettimeofday ( &ta, NULL );
+//
+//    smoothParallelXYFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
+//
+//    /* get initial time */
+//    gettimeofday ( &tb, NULL );
+//
+//    /* Work out the time */
+//    s = tb.tv_sec - ta.tv_sec;
+//    if ( ta.tv_usec < tb.tv_usec ) {
+//      u = tb.tv_usec - ta.tv_usec;
+//    } else {
+//      u = 1000000 - ta.tv_usec + tb.tv_usec;
+//      s = s-1;
+//    }
+//
+//    printf ("Parallel XY smoother took %d seconds and %d microseconds\n",s,u );
+//
+//
+//    /* get initial time */
+//    gettimeofday ( &ta, NULL );
+//
+//    smoothParallelCoalescedFor ( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
+//
+//    /* get initial time */
+//    gettimeofday ( &tb, NULL );
+//
+//    /* Work out the time */
+//    s = tb.tv_sec - ta.tv_sec;
+//    if ( ta.tv_usec < tb.tv_usec ) {
+//      u = tb.tv_usec - ta.tv_usec;
+//    } else {
+//      u = 1000000 - ta.tv_usec + tb.tv_usec;
+//      s = s-1;
+//    }
+//
+//    printf ("Parallel coalesced smoother took %d seconds and %d microseconds\n",s,u );
+//  }
 }
 

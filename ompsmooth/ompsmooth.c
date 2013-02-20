@@ -119,7 +119,13 @@ void smoothParallelXYFor ( int dim, int halfwidth, float * m1, float * m2 )
 void smoothParallelCoalescedFor ( int dim, int halfwidth, float * m1, float * m2 )
 {
 	int i;
-	for (i = 0; i < dim * dim; i++) {
-		m2[i] = evaluate ( dim, halfwidth, dim / i, i % dim, m1 );
+	// case 0
+	m2[0] = evaluate ( dim, halfwidth, 0, 0, m1 );
+
+	#pragma omp parallel for
+	for (i = 1; i < dim * dim; i++) {
+		int x = dim - (dim / i);
+		int y = i - x * dim;
+		m2[i] = evaluate ( dim, halfwidth, x, y, m1 );
 	}
 }
