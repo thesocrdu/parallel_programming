@@ -32,7 +32,7 @@ int main()
   float * m1in;
   float * m2out;
   int s,u;
-  for ( i = 0; i < 0; i++) {
+  for ( i = 0; i < 20; i++) {
   /* Create two input matrixes */
 //  float * m1in;
 //  float * m2out;
@@ -134,11 +134,12 @@ int main()
   /*********  Parallel Tests **********/
   printf("PARALLEL TESTS\n--------------------\n");
   int threads;
+  printf("Thds\tParallelYX\tParallelXY\tParaCoale\n");
   for (threads=1; threads <=32; threads*=2)
   {
     omp_set_num_threads(threads);
-    printf("Threads = %d\n", threads);
-    printf("ParallelYX\tParallelXY\tParaCoale\n");
+    printf("%d\t", threads);
+
     /* get initial time */
     gettimeofday ( &ta, NULL );
 
@@ -197,7 +198,7 @@ int main()
       s = s-1;
     }
     time = (float)s + (float)u/1000000.0;
-    printf("%f\n\n", time);
+    printf("%f\n", time);
 //    printf ("Parallel coalesced smoother took %d seconds and %d microseconds\n",s,u );
   }
 }
