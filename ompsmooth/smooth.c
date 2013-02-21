@@ -142,7 +142,7 @@ int main()
 		float totYX = 0.0, totXY = 0.0, totCoale = 0.0;
 		omp_set_num_threads(threads);
 
-		for(iter = 0; iter < 20; iter++) {
+		for(iter = 0; iter < 1; iter++) {
 			printf("Run: %d\n", iter + 1);
 
 			printf("\t%d\t", threads);
@@ -213,8 +213,8 @@ int main()
 		}
 		printf("-------------------------------------------------AVG\n\t\t%f\t%f\t%f\n\n", totYX/(float)iter, totXY/(float)iter, totCoale/(float)iter);
 		avgs[count][0] = totYX/(float)iter;
-		avgs[count][1] = totYX/(float)iter;
-		avgs[count][2] = totYX/(float)iter;
+		avgs[count][1] = totXY/(float)iter;
+		avgs[count][2] = totCoale/(float)iter;
 		count++;
 	}
 
@@ -228,6 +228,11 @@ int main()
 		}
 		printf("\n");
 	}
+
+	/* Start part 5 */
+	float * m3out = malloc ( sizeof(float)*MAT_SIZE );
+	memset ( m2out, 0, MAT_SIZE*sizeof(float) );
+	memset ( m3out, 0, MAT_SIZE*sizeof(float) );
 
 }
 
