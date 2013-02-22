@@ -15,7 +15,7 @@
 #include "ompsmooth.h"
 #include "omp.h"
 
-#define MAT_DIM 1000/*6000*/
+#define MAT_DIM 2000
 #define MAT_SIZE MAT_DIM*MAT_DIM
 
 #define KERNEL_HALFWIDTH 2
@@ -271,6 +271,8 @@ int main()
 			prog1Time += time;
 			printf("%f\t", time);
 
+			memset ( m2out, 0, MAT_SIZE*sizeof(float) );
+			memset ( m3out, 0, MAT_SIZE*sizeof(float) );
 
 			/* Program 2 */
 			gettimeofday ( &ta, NULL );
