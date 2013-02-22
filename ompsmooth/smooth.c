@@ -15,7 +15,7 @@
 #include "ompsmooth.h"
 #include "omp.h"
 
-#define MAT_DIM 6000
+#define MAT_DIM 1000/*6000*/
 #define MAT_SIZE MAT_DIM*MAT_DIM
 
 #define KERNEL_HALFWIDTH 2
@@ -28,6 +28,7 @@ int main()
 
 	int i;
 	float YXTot, XYTot = 0.0;
+	float time = 0.0;
 	printf("SerialYX\tSerialXY\n");
 	float * m1in;
 	float * m2out;
@@ -79,7 +80,7 @@ int main()
 			s = s-1;
 		}
 
-		float time = (float)s + (float)u/1000000.0;
+		time = (float)s + (float)u/1000000.0;
 		YXTot += time;
 		printf("%f\t", time);
 		//printf ("Serial YX smoother took %d seconds and %d microseconds\n",s,u );
@@ -138,7 +139,7 @@ int main()
 	float avgs[6][3];
 	printf("\tThds\tParallelYX\tParallelXY\tParaCoale\n");
 
-	for (threads=1; threads <=32; threads*=2) {
+	for (threads=1; threads <=0; threads*=2) {
 		float totYX = 0.0, totXY = 0.0, totCoale = 0.0;
 		omp_set_num_threads(threads);
 
@@ -163,7 +164,7 @@ int main()
 				u = 1000000 - ta.tv_usec + tb.tv_usec;
 				s = s-1;
 			}
-			float time = (float)s + (float)u/1000000.0;
+			time = (float)s + (float)u/1000000.0;
 			totYX += time;
 			printf("%f\t", time);
 			//printf ("Parallel YX smoother took %d seconds and %d microseconds\n",s,u );
@@ -218,7 +219,7 @@ int main()
 		count++;
 	}
 
-
+	/* Print parallel avg matrix */
 	int row,col;
 	printf("Thds\tParallelYX\tParallelXY\tParaCoale\n");
 	for(row = 0; row < 6; row++) {
@@ -229,10 +230,67 @@ int main()
 		printf("\n");
 	}
 
+
+
+
 	/* Start part 5 */
+	/* Reset m2 and m3 */
 	float * m3out = malloc ( sizeof(float)*MAT_SIZE );
 	memset ( m2out, 0, MAT_SIZE*sizeof(float) );
 	memset ( m3out, 0, MAT_SIZE*sizeof(float) );
 
-}
+	printf("\n\nStarting part 5...\n");
+	printf("Thds\tProgram1\tProgram2\n");
+	for (threads = 1; threads <=8; threads*=2) {
 
+		float prog1Time = 0.0;
+		float prog2Time = 0.0;
+		omp_set_num_threads(threads);
+		 for (iter = 0; iter < 15; iter++) {
+			printf("Run %d\n", iter);
+
+			/* Program 1 */
+			printf("%d\t", threads);
+			/* get initial time */
+			gettimeofday ( &ta, NULL );
+
+			smoothParallelYXFor( MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out );
+			smoothParallelYXFor( MAT_DIM, KERNEL_HALFWIDTH, m1in, m3out );
+
+			/* get final time */
+			gettimeofday ( &tb, NULL );
+			/* Work out the time */
+			s = tb.tv_sec - ta.tv_sec;
+			if ( ta.tv_usec < tb.tv_usec ) {
+				u = tb.tv_usec - ta.tv_usec;
+			} else {
+				u = 1000000 - ta.tv_usec + tb.tv_usec;
+				s = s-1;
+			}
+			time = (float)s + (float)u/1000000.0;
+			prog1Time += time;
+			printf("%f\t", time);
+
+
+			/* Program 2 */
+			gettimeofday ( &ta, NULL );
+
+			smoothParallelDoubleCoalescedFor (MAT_DIM, KERNEL_HALFWIDTH, m1in, m2out, m3out);
+
+			gettimeofday ( &tb, NULL );
+			/* Work out the time */
+			s = tb.tv_sec - ta.tv_sec;
+			if ( ta.tv_usec < tb.tv_usec ) {
+				u = tb.tv_usec - ta.tv_usec;
+			} else {
+				u = 1000000 - ta.tv_usec + tb.tv_usec;
+				s = s-1;
+			}
+			time = 0.0;
+			time = (float)s + (float)u/1000000.0;
+			prog2Time += time;
+			printf("%f\n", time);
+		}
+		 printf("----------------------------------------AVG\n\t%f\t%f\n", prog1Time/iter, prog2Time/iter);
+	}
+}

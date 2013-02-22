@@ -126,3 +126,14 @@ void smoothParallelCoalescedFor ( int dim, int halfwidth, float * m1, float * m2
 		m2[i] = evaluate ( dim, halfwidth, x, y, m1 );
 	}
 }
+
+void smoothParallelDoubleCoalescedFor (int dim, int halfwidth, float * m1, float * m2, float * m3) {
+	int i;
+	#pragma omp parallel for private(i)
+	for (i = 0; i < dim * dim; i++) {
+		int x = i % dim;
+		int y = i / dim;
+		m2[i] = evaluate ( dim, halfwidth, x, y, m1 );
+		m3[i] = evaluate ( dim, halfwidth, x, y, m1 );
+	}
+}

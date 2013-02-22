@@ -4,6 +4,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 #set(CMAKE_GENERATOR "Eclipse CDT4 - Unix Makefiles")
 
 PROJECT(ompsmooth C)
+set(CMAKE_BUILD_TYPE Debug)
 
 #ADD_DEFINITIONS(-g -O2 -fsigned-char -freg-struct-return -Wall -W -Wshadow -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Winline -Werror)
 ADD_DEFINITIONS(-fopenmp)
