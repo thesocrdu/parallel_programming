@@ -15,7 +15,7 @@
 #include "ompsmooth.h"
 #include "omp.h"
 
-#define MAT_DIM 2000
+#define MAT_DIM 6000
 #define MAT_SIZE MAT_DIM*MAT_DIM
 
 #define KERNEL_HALFWIDTH 2
@@ -33,7 +33,7 @@ int main()
 	float * m1in;
 	float * m2out;
 	int s,u;
-	for ( i = 0; i < 0; i++) {
+	for ( i = 0; i < 20; i++) {
 		/* Create two input matrixes */
 		//  float * m1in;
 		//  float * m2out;
@@ -139,11 +139,11 @@ int main()
 	float avgs[6][3];
 	printf("\tThds\tParallelYX\tParallelXY\tParaCoale\n");
 
-	for (threads=1; threads <=0; threads*=2) {
+	for (threads=1; threads <=32; threads*=2) {
 		float totYX = 0.0, totXY = 0.0, totCoale = 0.0;
 		omp_set_num_threads(threads);
 
-		for(iter = 0; iter < 1; iter++) {
+		for (iter = 0; iter < 20; iter++) {
 			printf("Run: %d\n", iter + 1);
 
 			printf("\t%d\t", threads);
@@ -246,7 +246,7 @@ int main()
 		float prog1Time = 0.0;
 		float prog2Time = 0.0;
 		omp_set_num_threads(threads);
-		 for (iter = 0; iter < 15; iter++) {
+		 for (iter = 0; iter < 20; iter++) {
 			printf("Run %d\n", iter);
 
 			/* Program 1 */
