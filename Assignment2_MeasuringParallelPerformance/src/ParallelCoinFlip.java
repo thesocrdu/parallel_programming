@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * hw4c
+ * hw2
  *
  * Kyle Mercer
  * 520.320
@@ -14,6 +14,7 @@ import java.util.Random;
 
 /**
  * Part 1
+ * @author Kyle Mercer
  * Class used to demonstrate parallelize coin flips.
  */
 public class ParallelCoinFlip implements Runnable {
