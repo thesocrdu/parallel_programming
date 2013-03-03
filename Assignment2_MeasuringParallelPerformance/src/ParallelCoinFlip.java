@@ -19,8 +19,8 @@ import java.util.Random;
  */
 public class ParallelCoinFlip implements Runnable {
 
-    //private static Random rand = new Random();
-    private static int numHeads = 0;
+    /** The number of heads this object/thread flipped */
+    private int numHeads;
     
     /** The number of flips this ParallelCoinFlipper is responsible for. */
     private int numFlips;
@@ -39,17 +39,13 @@ public class ParallelCoinFlip implements Runnable {
      */
     @Override
     public void run() {
-        int localNumHeads = 0;
         Random inRand = new Random();
         
         for (int i = 0; i < this.numFlips; i++) {
             if (inRand.nextBoolean()) {
-                localNumHeads++;
+                this.numHeads++;
             }
         }
-        synchronized (ParallelCoinFlip.class) {
-            ParallelCoinFlip.numHeads += localNumHeads;
-        };
     }
 
     /**
@@ -71,23 +67,19 @@ public class ParallelCoinFlip implements Runnable {
             System.err.println("Number of flips should be greater than or equal to the number of threads");
             System.exit(-1);
         }
-
+        
         // Array to hold references to thread objects
         Thread[] threads = new Thread[numThreads];
+        ParallelCoinFlip[] flipArr = new ParallelCoinFlip[numThreads];
         
         int flipsPerThread = flips / numThreads;
         //Log our start time
         long startTime = System.currentTimeMillis();
         
-        // First loop creates threads with flips / numThreads + 1 iterations
-        // just in case numThreads does not perfectly divide into flips.
-        for(int i = 0; i < flips % numThreads; i++) {
-            threads[i] = new Thread (new ParallelCoinFlip(flipsPerThread + 1));
-            threads[i].start();
-        }
-        // Make the rest of the threads with flips / numThreads coin flips
-        for (int i = flips % numThreads; i < numThreads; i++ ) {
-            threads[i] = new Thread (new ParallelCoinFlip(flipsPerThread));
+        // We were instructed to ignore rounding errors for flips/thread
+        for(int i = 0; i < numThreads; i++) {
+            flipArr[i] = new ParallelCoinFlip(flipsPerThread);
+            threads[i] = new Thread(flipArr[i]);
             threads[i].start();
         }
         
@@ -104,7 +96,13 @@ public class ParallelCoinFlip implements Runnable {
         //Calculate elapsed time.
         long timeElapsed = System.currentTimeMillis() - startTime;
         
-        System.out.println(ParallelCoinFlip.numHeads + " heads in " + flips + " coin tosses.");
+        //Calculate total heads from all threads
+        int totalHeads = 0;
+        for (ParallelCoinFlip pcf : flipArr) {
+            totalHeads += pcf.numHeads; //can access private member directly since we are in the class itself
+        }
+        
+        System.out.println(totalHeads + " heads in " + flips + " coin tosses.");
         System.out.println("Time elapsed: " + timeElapsed + "ms");
     }
 }

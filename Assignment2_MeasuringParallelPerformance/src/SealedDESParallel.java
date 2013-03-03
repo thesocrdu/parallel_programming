@@ -200,7 +200,7 @@ public class SealedDESParallel implements Runnable {
         maxkey = maxkey >>> (64 - keybits);
 
         // Create a simple cipher
-        SealedDES enccipher = new SealedDES();
+        SealedDESParallel enccipher = new SealedDESParallel(0,0);
 
         // Get a number between 0 and 2^64 - 1
         Random generator = new Random();
