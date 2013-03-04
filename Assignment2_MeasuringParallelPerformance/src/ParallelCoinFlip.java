@@ -102,7 +102,8 @@ public class ParallelCoinFlip implements Runnable {
             totalHeads += pcf.numHeads; //can access private member directly since we are in the class itself
         }
         
-        System.out.println(totalHeads + " heads in " + flips + " coin tosses.");
-        System.out.println("Time elapsed: " + timeElapsed + "ms");
+       // System.out.println(totalHeads + " heads in " + flips + " coin tosses.");
+       // System.out.println("Time elapsed: " + timeElapsed + "ms");
+        System.out.println(numThreads + "\t" + timeElapsed);
     }
 }

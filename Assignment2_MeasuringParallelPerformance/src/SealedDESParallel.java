@@ -161,7 +161,7 @@ public class SealedDESParallel implements Runnable {
             // Does the object contain the known plaintext
             if ((decryptstr != null) && (decryptstr.indexOf("Hopkins") != -1)) {
                 // Remote printlns if running for time.
-                System.out.printf("Found decrypt key %016x producing message: %s\n", i, decryptstr);
+               // System.out.printf("Found decrypt key %016x producing message: %s\n", i, decryptstr);
                        
 //                 System.out.println ( "Found decrypt key " + i +
 //                 " producing message: " + decryptstr );
@@ -170,9 +170,9 @@ public class SealedDESParallel implements Runnable {
             // Update progress every once in awhile.
             // Remote printlns if running for time.
             if (i % 100000 == 0) {
-                long elapsed = System.currentTimeMillis() - SealedDESParallel.runstart;
-                System.out.println("Searched key number " + i + " at "
-                        + elapsed + " milliseconds.");
+                //long elapsed = System.currentTimeMillis() - SealedDESParallel.runstart;
+                //System.out.println("Searched key number " + i + " at "
+                //        + elapsed + " milliseconds.");
             }
         }
 
@@ -254,6 +254,7 @@ public class SealedDESParallel implements Runnable {
         
         long elapsed = System.currentTimeMillis() - SealedDESParallel.runstart;
         long keys = maxkey + 1;
-        System.out.println ( "Completed search of " + keys + " keys at " + elapsed + " milliseconds.");
+        //System.out.println ( "Completed search of " + keys + " keys at " + elapsed + " milliseconds.");
+        System.out.println ( numThreads + "\t" + elapsed);
     }
 }
