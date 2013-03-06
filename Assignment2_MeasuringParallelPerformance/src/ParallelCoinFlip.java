@@ -71,7 +71,7 @@ public class ParallelCoinFlip implements Runnable {
             System.exit(-1);
         }
         
-        for (int j = 0; j <= 0; j++) {
+        for (int j = 0; j <= 1; j++) {
             // Array to hold references to thread objects
             Thread[] threads = new Thread[numThreads];
             ParallelCoinFlip[] flipArr = new ParallelCoinFlip[numThreads];
