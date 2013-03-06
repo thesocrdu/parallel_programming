@@ -40,12 +40,15 @@ public class ParallelCoinFlip implements Runnable {
     @Override
     public void run() {
         Random inRand = new Random();
+        int totalHeads = 0;
         
         for (int i = 0; i < this.numFlips; i++) {
             if (inRand.nextBoolean()) {
-                this.numHeads++;
+                //this.numHeads++;
+                totalHeads++;
             }
         }
+        this.numHeads = totalHeads;
     }
 
     /**
@@ -68,42 +71,42 @@ public class ParallelCoinFlip implements Runnable {
             System.exit(-1);
         }
         
-        // Array to hold references to thread objects
-        Thread[] threads = new Thread[numThreads];
-        ParallelCoinFlip[] flipArr = new ParallelCoinFlip[numThreads];
-        
-        int flipsPerThread = flips / numThreads;
-        //Log our start time
-        long startTime = System.currentTimeMillis();
-        
-        // We were instructed to ignore rounding errors for flips/thread
-        for(int i = 0; i < numThreads; i++) {
-            flipArr[i] = new ParallelCoinFlip(flipsPerThread);
-            threads[i] = new Thread(flipArr[i]);
-            threads[i].start();
-        }
-        
-        //Join all threads back together
-        for (int i = 0; i < numThreads; i++) {
-            try {
-                threads[i].join();
-            } catch (InterruptedException e) {
-                System.out.println("Thread interrupted.  Exception: " + e.toString() +
-                        " Message: " + e.getMessage()) ;
-                System.exit(-1);
+        for (int j = 0; j <= 0; j++) {
+            // Array to hold references to thread objects
+            Thread[] threads = new Thread[numThreads];
+            ParallelCoinFlip[] flipArr = new ParallelCoinFlip[numThreads];
+            int flipsPerThread = flips / numThreads;
+            //Log our start time
+            long startTime = System.currentTimeMillis();
+            // We were instructed to ignore rounding errors for flips/thread
+            for (int i = 0; i < numThreads; i++) {
+                flipArr[i] = new ParallelCoinFlip(flipsPerThread);
+                threads[i] = new Thread(flipArr[i]);
+                threads[i].start();
+            }
+            //Join all threads back together
+            for (int i = 0; i < numThreads; i++) {
+                try {
+                    threads[i].join();
+                } catch (InterruptedException e) {
+                    System.out.println("Thread interrupted.  Exception: "
+                            + e.toString() + " Message: " + e.getMessage());
+                    System.exit(-1);
+                }
+            }
+            //Calculate elapsed time.
+            long timeElapsed = System.currentTimeMillis() - startTime;
+            //Calculate total heads from all threads
+            int totalHeads = 0;
+            for (ParallelCoinFlip pcf : flipArr) {
+                totalHeads += pcf.numHeads; //can access private member directly since we are in the class itself
+            }
+            if (j != 0) { //ignore first time to warm up the JVM
+                // System.out.println(totalHeads + " heads in " + flips + " coin tosses.");
+                // System.out.println("Time elapsed: " + timeElapsed + "ms");
+                System.out.println(numThreads + "\t" + timeElapsed);
+
             }
         }
-        //Calculate elapsed time.
-        long timeElapsed = System.currentTimeMillis() - startTime;
-        
-        //Calculate total heads from all threads
-        int totalHeads = 0;
-        for (ParallelCoinFlip pcf : flipArr) {
-            totalHeads += pcf.numHeads; //can access private member directly since we are in the class itself
-        }
-        
-       // System.out.println(totalHeads + " heads in " + flips + " coin tosses.");
-       // System.out.println("Time elapsed: " + timeElapsed + "ms");
-        System.out.println(numThreads + "\t" + timeElapsed);
     }
 }
