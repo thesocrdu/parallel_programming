@@ -34,7 +34,7 @@ public class SealedDESParallel implements Runnable {
     private long numKeys;
     
     //SealedObject to decipher
-    private static SealedObject targetObj;
+    private SealedObject targetObj;
 
     // Cipher for the class
     private Cipher des_cipher;
@@ -54,7 +54,8 @@ public class SealedDESParallel implements Runnable {
      * @param numKs
      *            the number of keys to search through.
      */
-    public SealedDESParallel(long keySt, long numKs/*, SealedObject so*/) {
+    public SealedDESParallel(long keySt, long numKs, SealedObject so) {
+        this.targetObj = so;
         this.keyStart = keySt;
         this.numKeys = numKs;
 //        this.targetObj = so;
@@ -156,7 +157,7 @@ public class SealedDESParallel implements Runnable {
         for (long i = this.keyStart; i < endKey; i++) {
             // Set the key and decipher the object
             this.setKey(i);
-            String decryptstr = this.decrypt(SealedDESParallel.targetObj);
+            String decryptstr = this.decrypt(this.targetObj);
 
             // Does the object contain the known plaintext
             if ((decryptstr != null) && (decryptstr.indexOf("Hopkins") != -1)) {
@@ -200,7 +201,7 @@ public class SealedDESParallel implements Runnable {
         maxkey = maxkey >>> (64 - keybits);
 
         // Create a simple cipher
-        SealedDESParallel enccipher = new SealedDESParallel(0,0);
+        SealedDESParallel enccipher = new SealedDESParallel(0,0,null);
 
         // Get a number between 0 and 2^64 - 1
         Random generator = new Random();
@@ -217,7 +218,7 @@ public class SealedDESParallel implements Runnable {
 
         // Encrypt
         // As far as our decrypter is concerned, sldObj is all we know
-        SealedDESParallel.targetObj = enccipher.encrypt(plainstr);
+        SealedObject so = enccipher.encrypt(plainstr);
 //        SealedDESParallel.targetObj = sldObj;
         // END STARTUP stuff
 
@@ -230,13 +231,13 @@ public class SealedDESParallel implements Runnable {
         // just in case numThreads does not perfectly divide into flips.
         for (long i = 0; i < maxkey % (long) numThreads; i++) {
             threads[(int) i] = new Thread(new SealedDESParallel(i
-                    * keysPerThread, keysPerThread + 1));
+                    * keysPerThread, keysPerThread + 1, so));
             threads[(int) i].start();
         }
         // Make the rest of the threads with flips / numThreads coin flips
         for (long i = maxkey % (long) numThreads; i < (long) numThreads; i++) {
             threads[(int) i] = new Thread(new SealedDESParallel(i
-                    * keysPerThread, keysPerThread));
+                    * keysPerThread, keysPerThread, so));
             threads[(int) i].start();
         }
         
