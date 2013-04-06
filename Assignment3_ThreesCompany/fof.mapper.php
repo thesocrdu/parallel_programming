@@ -1,30 +1,33 @@
+#!/usr/bin/php
 <?php
+	error_reporting(0);
 	// Allow input through the pipe
-	$stdin = fopen("php://stdin", "r");
-	$pipeIn = stream_get_contents($stdin);
-	fclose($stdin);
+	// $stdin = fopen("php://stdin", "r");
+	// $pipeIn = stream_get_contents($stdin);
+	// fclose($stdin);
 	/////////////////////////////////////
 	
 	//One element is an entire line
-	$friendMatrix = explode("\n", $pipeIn);
+	//$friendMatrix = explode("\n", $pipeIn);
 
-	foreach ($friendMatrix as $rootFriendIndex => $friends) {
-		$friends = explode(" ", $friends);
+	$line = "";
+	while ($line = trim(fgets(STDIN))) {
+		$friends = explode(" ", $line);
 		$listSize = sizeof($friends);
 		$rootFriend = $friends[0];
 
 		for($i = 1; $i < $listSize; $i++) {
 			for($j = $i+1; $j < $listSize; $j++) {
 				if($rootFriend < $friends[$j]) {
-					print $friends[$i] . " " . $rootFriend . " " . $friends[$j] . "\n";
+					echo $friends[$i] . "\t" . $rootFriend . " " . $friends[$j] . "\n";
 				} else {
-					print $friends[$i] . " " . $friends[$j] . " " . $rootFriend . "\n";
+					echo $friends[$i] . "\t" . $friends[$j] . " " . $rootFriend . "\n";
 				}
 
 				if ( $rootFriend < $friends[$i] ) {
-					print $friends[$j] . " " . $rootFriend . " " . $friends[$i] . "\n";
+					echo $friends[$j] . "\t" . $rootFriend . " " . $friends[$i] . "\n";
 				} else {
-					print $friends[$j] . " " . $friends[$i] . " " . $rootFriend . "\n";
+					echo $friends[$j] . "\t" . $friends[$i] . " " . $rootFriend . "\n";
 				}
 			}
 		}
