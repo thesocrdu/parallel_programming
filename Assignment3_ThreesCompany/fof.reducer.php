@@ -16,15 +16,13 @@
 	$prevFriend2 = -1;
 	$line = "";
 	while ($line = trim(fgets(STDIN))) {
-		$triPairTemp = explode("\t", $line);
-		$triPair = array_merge(array($triPairTemp[0]), explode(" ", $triPairTemp[1]));
+		$triPair = explode(" ", $line);
 
 		if (($triPair[0] == $prevKey) &&
 			($triPair[1] == $prevFriend1) &&
 			($triPair[2] == $prevFriend2)) {
 			if ($printFlag === FALSE) { 
-				//print implode("\t", $triPair) . "\n";
-				echo $triPair[0] . "\t" . $triPair[1] . " " . $triPair[2] . "\n";
+				print implode(" ", $triPair) . "\n";
 				$printFlag = TRUE;
 			}
 		} else {

@@ -19,15 +19,15 @@
 		for($i = 1; $i < $listSize; $i++) {
 			for($j = $i+1; $j < $listSize; $j++) {
 				if($rootFriend < $friends[$j]) {
-					echo $friends[$i] . "\t" . $rootFriend . " " . $friends[$j] . "\n";
+					echo $friends[$i] . " " . $rootFriend . " " . $friends[$j] . "\n";
 				} else {
-					echo $friends[$i] . "\t" . $friends[$j] . " " . $rootFriend . "\n";
+					echo $friends[$i] . " " . $friends[$j] . " " . $rootFriend . "\n";
 				}
 
 				if ( $rootFriend < $friends[$i] ) {
-					echo $friends[$j] . "\t" . $rootFriend . " " . $friends[$i] . "\n";
+					echo $friends[$j] . " " . $rootFriend . " " . $friends[$i] . "\n";
 				} else {
-					echo $friends[$j] . "\t" . $friends[$i] . " " . $rootFriend . "\n";
+					echo $friends[$j] . " " . $friends[$i] . " " . $rootFriend . "\n";
 				}
 			}
 		}
