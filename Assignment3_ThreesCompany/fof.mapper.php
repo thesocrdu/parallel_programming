@@ -1,14 +1,6 @@
 #!/usr/bin/php
 <?php
 	error_reporting(0);
-	// Allow input through the pipe
-	// $stdin = fopen("php://stdin", "r");
-	// $pipeIn = stream_get_contents($stdin);
-	// fclose($stdin);
-	/////////////////////////////////////
-	
-	//One element is an entire line
-	//$friendMatrix = explode("\n", $pipeIn);
 
 	$line = "";
 	while ($line = trim(fgets(STDIN))) {
@@ -16,18 +8,21 @@
 		$listSize = sizeof($friends);
 		$rootFriend = $friends[0];
 
+		//produce all potential mutal friends from this list
 		for($i = 1; $i < $listSize; $i++) {
 			for($j = $i+1; $j < $listSize; $j++) {
+				echo $friends[$i] . " ";
 				if($rootFriend < $friends[$j]) {
-					echo $friends[$i] . " " . $rootFriend . " " . $friends[$j] . "\n";
+					echo $rootFriend . " " . $friends[$j] . "\n";
 				} else {
-					echo $friends[$i] . " " . $friends[$j] . " " . $rootFriend . "\n";
+					echo $friends[$j] . " " . $rootFriend . "\n";
 				}
 
+				echo $friends[$j] . " ";
 				if ( $rootFriend < $friends[$i] ) {
-					echo $friends[$j] . " " . $rootFriend . " " . $friends[$i] . "\n";
+					echo $rootFriend . " " . $friends[$i] . "\n";
 				} else {
-					echo $friends[$j] . " " . $friends[$i] . " " . $rootFriend . "\n";
+					echo $friends[$i] . " " . $rootFriend . "\n";
 				}
 			}
 		}
