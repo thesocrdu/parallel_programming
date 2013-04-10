@@ -103,15 +103,15 @@ public class FoF {
 		 * 				The context to write out to.
 		 */
 		public void reduce(Text key, Iterable<NullWritable> values, Context context) throws IOException, InterruptedException {
-			int sum = 0;
+			int total = 0;
 
 			//Count how many of each key there are.
 			for (NullWritable nw : values) {
-				sum++;
+				total++;
 			}
 
 			// If two or more of each key, we know we have mutual friends.
-			if (sum >= 2) {
+			if (total >= 2) {
 				context.write(key, result);
 				System.out.println(key);
 			}

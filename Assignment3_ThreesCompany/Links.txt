@@ -1,0 +1,5 @@
+Streaming output:
+http://outstuff.s3.amazonaws.com/BigStreamOut/part-00000
+
+JAR output:
+http://outstuff.s3.amazonaws.com/BigJavaOut/part-r-00000
