@@ -10,6 +10,8 @@
 #define GAMEOFLIFE_H_
 
 #include <stdio.h>
+#include <malloc.h>
+#include <string.h>
 #include <mpi.h>
 
 #define DIM 16 //This value should not change unless you change the global grid content accordingly
@@ -43,6 +45,9 @@ typedef struct myMpiProcess {
 
 void printGrid();
 void iterateOnce();
+void processChunk(int *, int);
+int aliveNext(int);
+int neightbors(int);
 
 
 #endif /* GAMEOFLIFE_H_ */
