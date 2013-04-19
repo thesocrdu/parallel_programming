@@ -15,7 +15,7 @@
 #include <mpi.h>
 
 #define DIM 16 //This value should not change unless you change the global grid content accordingly
-#define NUM_CYCLES 64
+#define NUM_CYCLES 2
 
 
 int globalGrid[DIM*DIM] = {	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -48,6 +48,8 @@ void iterateOnce();
 void processChunk(int *, int);
 int aliveNext(int);
 int neightbors(int);
+
+void debugPrint(int *, int);
 
 
 #endif /* GAMEOFLIFE_H_ */

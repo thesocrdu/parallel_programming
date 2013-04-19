@@ -23,8 +23,10 @@ int main(int argc, char **argv) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &(thisProcess.rank));
 	printf("My Rank: %d\n", thisProcess.rank);
 
+	printGrid();
 	for(i = 0; i < NUM_CYCLES; i++) {
 		iterateOnce();
+		//printf("Iteration %d\n---------------\n", i);
 		printGrid();
 	}
 
@@ -44,6 +46,7 @@ void printGrid() {
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
 ///**
@@ -185,4 +188,17 @@ int numNeighbors(int index) {
 		}
 	}
 	return neighbors;
+}
+
+
+
+void debugPrint(int *arr, int size) {
+	int i;
+	for(i = 0; i < size; i++) {
+		if(i % DIM == 0) {
+			printf("\n");
+		}
+		printf("%d", arr[i]);
+	}
+	printf("\n\n");
 }
