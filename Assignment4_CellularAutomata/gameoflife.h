@@ -15,9 +15,9 @@
 #include <mpi.h>
 
 #define DIM 16 //This value should not change unless you change the global grid content accordingly
-#define NUM_CYCLES 2
+#define NUM_CYCLES 64
 
-
+//Starting board with DIM of 16
 int globalGrid[DIM*DIM] = {	0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 							0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
 							1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -42,13 +42,13 @@ typedef struct myMpiProcess {
 } mpiProcess;
 
 //Needed methods
-
 void printGrid();
 void iterateOnce();
 void processChunk(int *, int);
 int aliveNext(int);
 int neightbors(int);
 
+//Debugging print method
 void debugPrint(int *, int);
 
 
