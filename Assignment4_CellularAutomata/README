@@ -1,0 +1,16 @@
+Game of life
+
+Included files: gameoflife.c, gameoflife.h
+
+
+Simulates Conway's Game of Life using MPI
+
+Tools used: OpenMPI, C language
+
+How to build:
+Use the command: "mpicc gameoflife.c -o gameoflife"
+Then issue the command to run: "mpirun -np <numProc> ./gameoflife"
+
+Where <numProc> is the number of processors you want to run the program with.
+
+NOTE: This MPI implementation only works with 1,2,4,8 and 16 processors.
