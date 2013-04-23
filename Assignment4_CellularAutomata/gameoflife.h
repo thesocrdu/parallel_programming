@@ -45,17 +45,8 @@ typedef struct myMpiProcess {
 
 //Needed methods
 void printGrid();
-//void iterateOnce();
 void printLocalGrid(int *arr, int size);
 void fillRow(int *currRow, int *upperRow, int *lowerRow, int rowNum, int *temp);
 int aliveNext(int *currRow, int col, int *upperRow, int *lowerRow, int leftCol, int rightCol);
-//int aliveInCol(int col);
-//void processChunk(int *, int);
-//int aliveNext(int);
-//int neightbors(int);
-
-//Debugging print method
-//void debugPrint(int *, int);
-
 
 #endif /* GAMEOFLIFE_H_ */

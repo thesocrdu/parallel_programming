@@ -55,13 +55,10 @@ int main(int argc, char **argv) {
 		grid[i] = globalGrid[i + offset];
 	}
 
-//	printf("Initial grid for rank %d:\n---------------------", thisProcess.rank);
-//	printLocalGrid(grid, gridSize);
 	if(thisProcess.rank == 0) {
 		printf("Initial grid:\n----------------\n");
 		printGrid();
 	}
-
 
 	for(i = 1; i <= NUM_CYCLES; i++) {
 		/* Begin calculating next generation */
@@ -71,37 +68,21 @@ int main(int argc, char **argv) {
 			MPI_Send(&grid[DIM * (rowsPerProcess - 1)], DIM, MPI_INT, thisProcess.next, 2, MPI_COMM_WORLD);
 			MPI_Send(&grid[0], DIM, MPI_INT, thisProcess.prev, 2, MPI_COMM_WORLD );
 
-//			printf("Rank %d sent rank %d row:\n", thisProcess.rank, thisProcess.prev);
-//			printLocalGrid(&grid[0], DIM);
-
 			MPI_Recv(upper, DIM, MPI_INT, thisProcess.prev, 2, MPI_COMM_WORLD, &stat );
 			MPI_Recv(lower, DIM, MPI_INT, thisProcess.next, 2, MPI_COMM_WORLD, &stat );
-
-//			printf("Rank %d got lower row to be:\n", thisProcess.rank);
-//			printLocalGrid(lower, DIM);
-
 		} else {
 			MPI_Recv(upper, DIM, MPI_INT, thisProcess.prev, 2, MPI_COMM_WORLD, &stat);
 			MPI_Recv(lower, DIM, MPI_INT, thisProcess.next, 2, MPI_COMM_WORLD, &stat);
 
-//			printf("Rank %d got upper row to be:\n", thisProcess.rank);
-//			printLocalGrid(upper, DIM);
-
 			MPI_Send(&grid[DIM * (rowsPerProcess - 1)], DIM, MPI_INT, thisProcess.next, 2, MPI_COMM_WORLD);
 			MPI_Send(&grid[0], DIM, MPI_INT, thisProcess.prev, 2, MPI_COMM_WORLD );
-
-//			printf("Rank %d sent rank %d row:\n", thisProcess.rank, thisProcess.prev);
-//			printLocalGrid(&grid[0], DIM);
 		}
 
 		/* Update values to tempGrid */
-
-		/* Initial special case. */
-//		printf("Rank: %d\n", thisProcess.rank);
-//		printLocalGrid(&grid[DIM*2], DIM);
-		if(thisProcess.comSize == 16) {
+		if(thisProcess.comSize == DIM) { //Special case for num processors equal to DIM
 			fillRow(&grid[0], upper, lower, 0, &tmpGrid[0]);
 		} else {
+			/* Initial special case. */
 			fillRow(&grid[0], upper, &grid[DIM * 1], 0, &tmpGrid[0]);
 			/* For each row in grid */
 			for(j = 1; j < rowsPerProcess - 1; j++) {
@@ -110,12 +91,9 @@ int main(int argc, char **argv) {
 			/* Final special case. */
 			fillRow(&grid[DIM * (rowsPerProcess - 1)], &grid[DIM * (rowsPerProcess - 2)], lower, rowsPerProcess - 1, &tmpGrid[DIM * (rowsPerProcess - 1)]);
 		}
-		//printLocalGrid(&grid[0], DIM);
 
 		//Copy temp grid over to grid
 		memcpy(&grid[0], &tmpGrid[0], sizeof(int) * gridSize);
-
-		//printLocalGrid(grid, gridSize);
 
 		//send grid to master? / receive grid from workers?
 		if(thisProcess.rank == 0) {
@@ -172,9 +150,7 @@ void printLocalGrid(int *arr, int size) {
  */
 void fillRow(int *currRow, int *upperRow, int *lowerRow, int rowNum, int *temp) {
 	int i;
-	//int numNeighbors;
 
-	//numNeighbors = aliveInCol(DIM - 1) + );
 	temp[0] = aliveNext(currRow, 0, upperRow, lowerRow, DIM - 1, 1);
 	/* Compute every new cell in the row. */
 	for(i = 1; i < DIM - 1; i++) {
